@@ -7,6 +7,7 @@ public class BlockDataContainer
     public List<MapData> listMapData = new List<MapData>();
     public Dictionary<Vector3, MapData> DicMapData = new Dictionary<Vector3, MapData>();
 
+ 
     public void Add(Vector3 pos)
     {
         if (DicMapData.ContainsKey(pos) == false)

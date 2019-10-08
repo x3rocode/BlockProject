@@ -21,15 +21,48 @@ public class ShapeBlock : MonoBehaviour {
 
     public int height;
     public int width;
+    int a = 0;
+    int b = -1;
 
 
+    //이동된 값을 가져옴
+    public void OnChangePosition(Vector3 vector)
+    {
+        Debug.Log("나 이동 당했어." + vector);
+        for(int i = 0; i < positions.Count; i ++)
+        {
+           positions[i]  += vector; 
+        }
+    }
+
+    public void OnChangeRotation2(Vector3 rotationAxis, float rotValue)
+    {
+        this.positions.Clear();
+
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+        
+            this.positions.Add(this.transform.GetChild(i).position);
+        }
+    }
+     
+    public void OnChangeRotation(Vector3 rotationAxis, float rotValue)
+    {
+        OnChangeRotation2(rotationAxis, rotValue);
+        return; 
+        Debug.Log("나 회전당했어. => " + rotationAxis +"," + rotValue ); 
+        for (int i = 0; i < positions.Count; i++)
+        { 
+
+        }
+    }
 
     public List<Vector3> GetShape(ShapeType type)
     {
         List<Vector3> retPositions = new List<Vector3>(); 
         for(int i = 0; i < cachedShape[type].Count; i++)
         {
-            retPositions.Add(cachedShape[type][i]);
+            retPositions.Add(this.transform.position + cachedShape[type][i]);
         }
 
         return retPositions;
@@ -41,12 +74,9 @@ public class ShapeBlock : MonoBehaviour {
         cachedShape.Add(ShapeType.Plus, plusList);
         //마이너스  모양을  등록하자
         var minusList = new List<Vector3>() { new Vector3(0, 0, 3), new Vector3(-2, 0, -3), new Vector3(1, 0, -1), new Vector3(3, 0, 2), new Vector3(3, 0, 0), new Vector3(2, 0, -1), new Vector3(-1, 0, -1), new Vector3(-1, 0, 2), new Vector3(-1, 0, 1), new Vector3(-1, 0, -2), new Vector3(-2, 0, -1), new Vector3(3, 0, 1), new Vector3(3, 0, -1), new Vector3(1, 0, 3), new Vector3(-1, 0, 3), new Vector3(-1, 0, 0), new Vector3(-3, 0, -2), new Vector3(-1, 0, -3), new Vector3(-3, 0, -3), new Vector3(-3, 0, -1), new Vector3(0, 0, -1), new Vector3(3, 0, -2), new Vector3(3, 0, -3), new Vector3(4, 0, -3), new Vector3(5, 0, -3), new Vector3(5, 0, -2), new Vector3(5, 0, -1), new Vector3(4, 0, -1), new Vector3(4, 0, 3), new Vector3(3, 0, 3), new Vector3(2, 0, 3), new Vector3(-2, 0, 3), new Vector3(-3, 0, 3), new Vector3(-3, 0, 4), new Vector3(-3, 0, 5), new Vector3(-2, 0, 5), new Vector3(-1, 0, 5), new Vector3(-1, 0, 4), new Vector3(5, 0, 3), new Vector3(5, 0, 4), new Vector3(5, 0, 5), new Vector3(3, 0, 4), new Vector3(3, 0, 5), new Vector3(4, 0, 5), new Vector3(0, 0, 3) }; ;  // <-내친구  이안에  들어갈  네모모양을 유니티에서 중앙잘맞처서 만들어서  PrintArrayscript로  디버그로그  뽑은다음 여기에 너으렴  조아조앚왖조아 하고와...
-        cachedShape.Add(ShapeType.Minus, minusList);
 
 
-
-        Debug.Log(GetShape(ShapeType.Minus).Count);
-  
+        cachedShape.Add(ShapeType.Minus, minusList); 
     }
 
     public string PrintArrayScript()
@@ -72,6 +102,17 @@ public class ShapeBlock : MonoBehaviour {
        
         return front;
     }
+
+    public void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            if(i  == 19)
+            UnityEditor.Handles.Label(this.transform.GetChild(i).position, "("+i.ToString()+")"+this.transform.GetChild(i).position.ToString()); 
+        }
+#endif
+    }
     public void Awake()
     {
         DebugPositionLoad();
@@ -89,7 +130,7 @@ public class ShapeBlock : MonoBehaviour {
             positions.Clear();
             for (int i = 0; i < transform.childCount; i ++)
             {
-                positions.Add(transform.GetChild(i).localPosition);
+                positions.Add(transform.GetChild(i).position);
             } 
         }
     }
