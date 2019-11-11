@@ -12,7 +12,6 @@ public class BlockDataContainer
     {
         if (DicMapData.ContainsKey(pos) == false)
         {
-
             GameObject block = GameObject.CreatePrimitive(PrimitiveType.Cube);
             block.transform.position = pos;
 
@@ -22,7 +21,6 @@ public class BlockDataContainer
 
             listMapData.Add(md);
             DicMapData.Add(pos, md);
-
         }
         else
         {

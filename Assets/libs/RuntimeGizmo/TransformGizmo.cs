@@ -448,6 +448,15 @@ namespace RuntimeGizmos
                             {
                                 Transform target = targetRootsOrdered[i];
                                 target.Translate(GetMoveAxis(), Space.World);
+
+                                //현재 타겟에서 쉐이프 블록 컴퍼넌트를 가져온다.
+                                var sb = target.transform.GetComponent<ShapeObject>();
+                                //컴퍼넌트가 null이 아닌경우
+                                if (sb != null)
+                                {
+                                    //위치가 변경됨을 통지한다.
+                                    sb.OnChangePosition(GetMoveAxis());
+                                }
                             } 
                             SetPivotPointOffset(GetMoveAxis());
                             movedMousePos = Vector3.zero;
@@ -519,8 +528,7 @@ namespace RuntimeGizmos
                                 Vector3 projected = (nearAxis == Axis.Any || ExtVector3.IsParallel(axis, planeNormal)) ? planeNormal : Vector3.Cross(axis, planeNormal);
                                 rotateAmount = (ExtVector3.MagnitudeInDirection(mousePosition - previousMousePosition, projected) * (rotateSpeedMultiplier * 100f)) / GetDistanceMultiplier();
 
-
-                                Debug.Log("nc:" + rotValue); 
+                                 
                                 rotValue += rotateAmount;   //우리가 이  값이  90도가  되면  큐브를돌리며ㅑㄴ  대겟ㅈ;;?웅
 
                                 //하지만 아니란다  왜냐하면 우리는 조금만돌려도  90도식 돌아가면  조캣잔아?맞아 
@@ -538,14 +546,30 @@ namespace RuntimeGizmos
                             {
                                 Transform target = targetRootsOrdered[i];
 
+
                                 if (pivot == TransformPivot.Pivot)
                                 {
                                     target.Rotate(rotationAxis, rotValue, Space.World);
+                                    //객체를 가져온다(shape block)
+                                    var sb = target.GetComponent<ShapeBlock>();
+                                    //null이 아니면
+                                    if (sb != null)
+                                    {
+                                        //회전됨을 통지한다.
+                                        sb.OnChangeRotation(rotationAxis, rotValue);
+                                    }
                                 }
                                 else if (pivot == TransformPivot.Center)
                                 {
                                     target.RotateAround(originalPivot, rotationAxis, rotValue);
+                                    var sb = target.GetComponent<ShapeBlock>();
+                                    if (sb != null)
+                                    {
+                                        sb.OnChangeRotation(rotationAxis, rotValue);
+                                    }
                                 }
+
+                               Debug.Log("모가드러잇지" + rotationAxis);
                             }
                             totalRotationAmount *= Quaternion.Euler(rotationAxis * rotValue);
                             //초기화
